@@ -109,14 +109,14 @@
 **响应参数**
 
 
-| 参数          | 类型         | 说明                   | 是否必填  |
-| ----------- | ---------- | -------------------- | ----- |
-| resultCode  | NSUinteger | 返回相应的结果码             | 是     |
-| token       | NSString   | 登录时需要的token          | 成功时必填 |
-| openid      | NSString   | 用户身份唯一标识             | 成功时必填 |
-| authType    | NSString   | 认证类型(详见附录1 认证方法标识)   | 成功时必填 |
-| authTypeDes | NSString   | 认证类型描述(详见附录1 认证方法标识) | 成功时必填 |
-| desc        | NSString   | 调用描述                 | 否     |
+| 参数          | 类型         | 说明                                       | 是否必填  |
+| ----------- | ---------- | ---------------------------------------- | ----- |
+| resultCode  | NSUinteger | 返回相应的结果码                                 | 是     |
+| token       | NSString   | 成功时返回：临时凭证                               | 成功时必填 |
+| openid      | NSString   | 成功时返回：用户身份唯一标识                           | 成功时必填 |
+| authType    | NSString   | 认证类型：0:其他；</br>1:WiFi下网关鉴权；</br>2:网关鉴权；</br>3:短信上行鉴权；</br>7:短信验证码登录 | 成功时必填 |
+| authTypeDes | NSString   | 认证类型描述，对应authType                        | 成功时必填 |
+| desc        | NSString   | 调用描述                                     | 否     |
 
 
 
