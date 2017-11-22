@@ -38,7 +38,7 @@
 ```objective-c
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-     [TYRZBaseApi customInit:APPID appKey:APPKEY sourceID:SOURCEID];
+     [TYRZBaseApi customInit:APPID appKey:APPKEY];
     return YES;
 }
 ```
