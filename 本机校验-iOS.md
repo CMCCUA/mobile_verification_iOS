@@ -112,7 +112,7 @@
 | 参数          | 类型         | 说明                                       | 是否必填  |
 | ----------- | ---------- | ---------------------------------------- | ----- |
 | resultCode  | NSUinteger | 返回相应的结果码                                 | 是     |
-| token       | NSString   | 成功时返回：临时凭证                               | 成功时必填 |
+| token       | NSString   | 成功时返回：临时凭证，token有效期5min，一次有效             | 成功时必填 |
 | openid      | NSString   | 成功时返回：用户身份唯一标识                           | 成功时必填 |
 | authType    | NSString   | 认证类型：0:其他；</br>1:WiFi下网关鉴权；</br>2:网关鉴权；</br>3:短信上行鉴权；</br>7:短信验证码登录 | 成功时必填 |
 | authTypeDes | NSString   | 认证类型描述，对应authType                        | 成功时必填 |
