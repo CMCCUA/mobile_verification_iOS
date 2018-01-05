@@ -112,7 +112,7 @@
 | 参数          | 类型         | 说明                                       | 是否必填  |
 | ----------- | ---------- | ---------------------------------------- | ----- |
 | resultCode  | NSUinteger | 返回相应的结果码                                 | 是     |
-| token       | NSString   | 成功时返回：临时凭证，token有效期5min，一次有效             | 成功时必填 |
+| token       | NSString   | 成功时返回：临时凭证，token有效期2min，一次有效，同一用户（手机号）10分钟内获取token且未使用的数量不超过30个 | 成功时必填 |
 | openid      | NSString   | 成功时返回：用户身份唯一标识                           | 成功时必填 |
 | authType    | NSString   | 认证类型：0:其他；</br>1:WiFi下网关鉴权；</br>2:网关鉴权；</br>3:短信上行鉴权；</br>7:短信验证码登录 | 成功时必填 |
 | authTypeDes | NSString   | 认证类型描述，对应authType                        | 成功时必填 |
@@ -167,18 +167,18 @@
 
 ## 3.1. 本机号码校验接口
 
+校验用户输入的号码是否本机号码。
+应用将手机号码传给统一认证SDK，统一认证SDK向统一认证服务端发起本机号码校验请求，统一认证服务端通过网关或者短信上行获取本机手机号码和第三方应用传输的手机号码进行校验，返回校验结果。</br>
+
 ### 3.1.1. 业务流程
 
-SDK在获取token过程中，用户手机必须在打开数据网络情况下才能获取成功，纯wifi环境下会自动跳转到SDK的短信验证码页面（如果有配置）或者返回错误码。**注：本业务目前仅支持中国移动号码，建议开发者在调用SDK的获取token方法前，判断当前用户手机运营商**
+SDK在获取token过程中，用户手机必须在打开数据网络情况下才能获取成功，纯wifi环境下会自动跳转到SDK的短信验证码页面（如果有配置）或者返回错误码。**注：本业务目前仅支持中国移动号码，建议开发者在使用该功能前，判断当前用户手机运营商**
 
 ![1](image\1.1.png)
 
 </br>
 
 ### 3.1.2. 接口说明
-
-校验用户输入的号码是否本机号码。
-应用将手机号码传给统一认证SDK，统一认证SDK向统一认证服务端发起本机号码校验请求，统一认证服务端通过网关或者短信上行获取本机手机号码和第三方应用传输的手机号码进行校验，返回校验结果。</br>
 
 **调用次数说明：**本产品属于收费业务，开发者未签订服务合同前，每天总调用次数有限，详情可咨询商务。
 
@@ -196,37 +196,37 @@ SDK在获取token过程中，用户手机必须在打开数据网络情况下才
 
 **请求参数**
 
-| 参数            | 类型     | 层级    | 约束                    | 说明                                       |      |
-| ------------- | ------ | ----- | --------------------- | ---------------------------------------- | ---- |
-| **header**    |        | **1** | 必选                    |                                          |      |
-| version       | string | 2     | 必选                    | 版本号,初始版本号1.0,有升级后续调整                     |      |
-| msgId         | string | 2     | 必选                    | 使用UUID标识请求的唯一性                           |      |
-| timestamp     | string | 2     | 必选                    | 请求消息发送的系统时间，精确到毫秒，共17位，格式：20121227180001165 |      |
-| appId         | string | 2     | 必选                    | 应用ID                                     |      |
-| **body**      |        | **1** | 必选                    |                                          |      |
-| openType      | String | 2     | 否，requestertype字段为0时是 | 运营商类型：</br>1:移动;</br>2:联通;</br>3:电信;</br>0:未知 |      |
-| requesterType | String | 2     | 是                     | 请求方类型：</br>0:APP；</br>1:WAP              |      |
-| message       | String | 2     | 否                     | 接入方预留参数，该参数会透传给通知接口，此参数需urlencode编码      |      |
-| expandParams  | String | 2     | 否                     | 扩展参数格式：param1=value1\|param2=value2  方式传递，参数以竖线 \| 间隔方式传递，此参数需urlencode编码。 |      |
-| phoneNum      | String | 2     | 是                     | 待校验的手机号码的64位sha256值，字母大写。（手机号码 + appKey + timestamp）（注：“+”号为合并意思） |      |
-| token         | String | 2     | 是                     | 身份标识，字符串形式的token                         |      |
-| sign          | String | 2     | 是                     | 签名，HMACSHA256( appId +     msgId + phonNum + timestamp + token + version)，输出64位大写字母 （注：“+”号为合并意思，不包含在被加密的字符串中,appkey为秘钥, 参数名做自然排序（Java是用TreeMap进行的自然排序）） |      |
-|               |        |       |                       |                                          |      |
+| 参数            | 类型     | 层级    | 约束                    | 说明                                       |
+| ------------- | ------ | ----- | --------------------- | ---------------------------------------- |
+| **header**    |        | **1** | 必选                    |                                          |
+| version       | string | 2     | 必选                    | 版本号,初始版本号1.0,有升级后续调整                     |
+| msgId         | string | 2     | 必选                    | 使用UUID标识请求的唯一性                           |
+| timestamp     | string | 2     | 必选                    | 请求消息发送的系统时间，精确到毫秒，共17位，格式：20121227180001165 |
+| appId         | string | 2     | 必选                    | 应用ID                                     |
+| **body**      |        | **1** | 必选                    |                                          |
+| openType      | String | 2     | 否，requestertype字段为0时是 | 运营商类型：</br>1:移动;</br>2:联通;</br>3:电信;</br>0:未知 |
+| requesterType | String | 2     | 是                     | 请求方类型：</br>0:APP；</br>1:WAP              |
+| message       | String | 2     | 否                     | 接入方预留参数，该参数会透传给通知接口，此参数需urlencode编码      |
+| expandParams  | String | 2     | 否                     | 扩展参数格式：param1=value1\|param2=value2  方式传递，参数以竖线 \| 间隔方式传递，此参数需urlencode编码。 |
+| phoneNum      | String | 2     | 是                     | 待校验的手机号码的64位sha256值，字母大写。（手机号码 + appKey + timestamp， “+”号为合并意思）（注：建议开发者对用户输入的手机号码的格式进行校验，增加校验通过的概率） |
+| token         | String | 2     | 是                     | 身份标识，字符串形式的token                         |
+| sign          | String | 2     | 是                     | 签名，HMACSHA256( appId +     msgId + phonNum + timestamp + token + version)，输出64位大写字母 （注：“+”号为合并意思，不包含在被加密的字符串中,appkey为秘钥, 参数名做自然排序（Java是用TreeMap进行的自然排序）） |
+|               |        |       |                       |                                          |
 
 **响应参数**
 
-| 参数           | 层级    | 类型     | 约束   | 说明                                       |      |
-| ------------ | ----- | :----- | :--- | :--------------------------------------- | ---- |
-| **header**   | **1** |        | 必选   |                                          |      |
-| msgId        | 2     | string | 必选   | 对应的请求消息中的msgid                           |      |
-| timestamp    | 2     | string | 必选   | 响应消息发送的系统时间，精确到毫秒，共17位，格式：20121227180001165 |      |
-| appId        | 2     | string | 必选   | 应用ID                                     |      |
-| resultCode   | 2     | string | 必选   | 规则参见4.1平台返回码                             |      |
-| **body**     | **1** |        | 必选   |                                          |      |
-| resultDesc   | 2     | String | 必选   | 描述参见4.1平台返回码                             |      |
-| message      | 2     | String | 否    | 接入方预留参数，该参数会透传给通知接口，此参数需urlencode编码      |      |
-| expandParams | 2     | String | 否    | 扩展参数格式：param1=value1\|param2=value2  方式传递，参数以竖线 \| 间隔方式传递，此参数需urlencode编码。 |      |
-|              |       |        |      |                                          |      |
+| 参数           | 层级    | 类型     | 约束   | 说明                                       |
+| ------------ | ----- | :----- | :--- | :--------------------------------------- |
+| **header**   | **1** |        | 必选   |                                          |
+| msgId        | 2     | string | 必选   | 对应的请求消息中的msgid                           |
+| timestamp    | 2     | string | 必选   | 响应消息发送的系统时间，精确到毫秒，共17位，格式：20121227180001165 |
+| appId        | 2     | string | 必选   | 应用ID                                     |
+| resultCode   | 2     | string | 必选   | 规则参见4.3平台返回码                             |
+| **body**     | **1** |        | 必选   |                                          |
+| resultDesc   | 2     | String | 必选   | 描述参见4.3平台返回码                             |
+| message      | 2     | String | 否    | 接入方预留参数，该参数会透传给通知接口，此参数需urlencode编码      |
+| expandParams | 2     | String | 否    | 扩展参数格式：param1=value1\|param2=value2  方式传递，参数以竖线 \| 间隔方式传递，此参数需urlencode编码。 |
+|              |       |        |      |                                          |
 
 </br>
 
@@ -236,21 +236,19 @@ SDK在获取token过程中，用户手机必须在打开数据网络情况下才
 
 ```
 {
-  "body": {
-    "openType": "1", 
-    "requesterType": "1", 
-    "message ": "", 
-	"expandParams": "",
-    "phoneNum": "4526285940b6fa7fef49e1dcb04ee944f41a8745444015daf2771bfb7ad7c800", 
-    "token": "", 
-    "sign": ""
-    }, 
-  "header": {
-    "msgId ": "61237890345", 
-    "timestamp ": "20160628180001165", 
-    "version ": "2.0", 
-    "appId ": "0008"
-  }
+    "header":{
+        "appId":"3000*****401",
+        "timestamp":"20180104090953788",
+        "version":"1.0",
+        "msgId":"8ADFF305-C7FC-B3E1-B1AE-CC130792FBD0"
+    },
+    "body":{
+        "openType":"1",
+        "token":"STsid0000001515028196605yc1oYNTuPlTlLT10AR3ywr2WApEq14JH",
+        "sign":"227716D80112F953632E4AFBB71C987E9ABF4831ACDA5A7464E2D8F61F0A9477",
+     "phoneNum":"38D19FF8CE10416A6F3048467CB6F7D57A44407CB198C6E8793FFB87FEDFA9B8",
+        "requesterType":"0"
+    }
 }
 ```
 
@@ -260,16 +258,16 @@ SDK在获取token过程中，用户手机必须在打开数据网络情况下才
 
 ```
 {
-  "body": {
-    "resultDesc ": "", 
-    "message": "", 
-    "expandParams ": ""
-    }, 
-   "header": {
-    "msgId": "61237890345", 
-    "timestamp": "20160628180001165", 
-    "resultCode": "000"
-  }
+    "body":{
+        "message":"",
+        "resultDesc":"是本机号码"
+    },
+    "header":{
+        "appId":"3000*****40",
+        "msgId":"8ADFF305-C7FC-B3E1-B1AE-CC130792FBD0",
+        "resultCode":"000",
+        "timestamp":"20180104090957277"
+    }
 }
 ```
 
